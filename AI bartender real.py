@@ -74,12 +74,13 @@ def finish_ingredients():
     
     # Check if there's only one ingredient
     if len(ingredients) == 1:
-        label.config(text="Whoops! Looks like one ingredient just won’t cut it for a cocktail! How about a glass of water instead? 💦")  # Display warning message
+        label.config(text="Whoops! Looks like one ingredient just won’t cut it for a cocktail! \n How about a glass of water instead? 💦")  # Display warning message
+        retry_button.pack(pady=30)  # Show the button to allow retrying the ingredient input
     else:
         label.config(text=f"Finished! Ingredients: {', '.join(ingredients)}")  # Show the ingredients if more than one
         cocktail_label = tk.Label(root, text="!", font=("FixedSys", 17), fg="goldenrod", bg="VioletRed4")
-        cocktail_label.pack(pady=10)
-        cocktail_label.config(text=f"Here is a list of cocktails you can make: {'\n'.join(cocktails)}")
+        cocktail_label.pack(pady=30)
+        cocktail_label.config(text=f"Here is a list of cocktails you can make: \n{'\n'.join(ingredients)}") #will need to replace ingredients with the cocktails list, not sure what variable name it is
 
     # Clear screens
     ingredient_listbox.delete(0, tk.END)
@@ -89,6 +90,17 @@ def finish_ingredients():
     ingredient_listbox.pack_forget()
     entry.pack_forget()
     label_ingredient.pack_forget()
+
+# Function to allow the user to enter more ingredients
+def retry_ingredients():
+    # Hide the retry button
+    retry_button.pack_forget()
+
+    # Reset the ingredient list and show the input fields again
+    label.config(text="What ingredients do you have?")
+    entry.pack(pady=10)
+    label_ingredient.pack(pady=5)
+    finish_button.pack(pady=20)
 
 # Create the main window
 root = tk.Tk()
@@ -110,6 +122,9 @@ entry.bind("<Return>", enter_ingredient)
 
 # Finish button
 finish_button = tk.Button(root, text="Finish Ingredients", command=show_loading_screen, font=("FixedSys", 12), bg="old lace")
+
+# Retry button (for entering more ingredients)
+retry_button = tk.Button(root, text="Retry and Enter More Ingredients", command=retry_ingredients, font=("FixedSys", 12), bg="old lace")
 
 # Loading screen
 making_cocktail_label = tk.Label(root, text="Making Your Personalized Cocktails...", font=("FixedSys", 20), fg="white", bg="VioletRed4")
