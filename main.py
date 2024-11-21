@@ -1,12 +1,7 @@
-# streamlit run .\main.py
-# import streamlit as st
-#from openai import OpenAI
-#import getpass
 import os
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
-from langchain_core.messages import HumanMessage, SystemMessage
-#from langchain.llms import OpenAI
+from langchain.schema import HumanMessage, SystemMessage
+from langchain.chat_models import ChatOpenAI
 
 # Intialization
 load_dotenv()
@@ -14,8 +9,8 @@ api_key = os.environ["OPEN_API_KEY"]
 chat = ChatOpenAI(model='gpt-3.5-turbo-0125', api_key=api_key)
 #client = OpenAI(open_api_key=api_key)
 
-def generate_drink(ingredients):
-    prompt_template = f"Give me an in depth recipie a drink. The drink should be made from the {ingredients} I currently have."
+def generate_drink(ingredients, appliance, servings, price):
+    prompt_template = f"Give me an in depth recipie for {servings} serving(s) of a drink. The drink should be made from the {ingredients} I currently have. The appliances that I can use are {appliance}. I would like to spend at most {price} if I have to spend any moeny at all."
     response = chat(
         [
             SystemMessage(content='You are an AI Bartender. Give an in depth recipe for the required amount of servings of the drink, including the time to make, ingredients, price, steps, and a few slight alterations that can be made to the drink (i.e. more/less boosy and more/less bitter). Leave out the ingredients that we already have out of the price estimation and state why they were left out.'),
