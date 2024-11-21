@@ -1,5 +1,6 @@
 import tkinter as tk
 import time
+from main import generate_drink, generate_drink_name
 
 # Function to handle button click (start the input process)
 def start_button():
