@@ -1,6 +1,8 @@
 import tkinter as tk
 import time
-from main import generate_drink, generate_drink_name
+
+from main import generate_drink_name
+
 
 # Function to handle button click (start the input process)
 def start_button():
@@ -81,7 +83,7 @@ def finish_ingredients():
         label.config(text=f"Finished! Ingredients: {', '.join(ingredients)}")  # Show the ingredients if more than one
         cocktail_label = tk.Label(root, text="!", font=("FixedSys", 17), fg="goldenrod", bg="VioletRed4")
         cocktail_label.pack(pady=30)
-        cocktail_label.config(text=f"Here is a list of cocktails you can make: \n{'\n'.join(ingredients)}") #will need to replace ingredients with the cocktails list, not sure what variable name it is
+        cocktail_label.config(text=f"Here is a list of cocktails you can make: \n{'\n'.join(generate_drink_name(ingredients))}") #will need to replace ingredients with the cocktails list, not sure what variable name it is
 
     # Clear screens
     ingredient_listbox.delete(0, tk.END)
