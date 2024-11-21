@@ -48,9 +48,9 @@ def start_animation():
         if shaking:
             # Sequence of emojis to simulate shaking
             shaker_frame.config(text="🍸")  # Cocktail glass emoji
-            shaker_frame.after(500, shaker_frame.config, {"text": "🥂"})  # Shaker or other symbols to simulate shaking
+            shaker_frame.after(500, shaker_frame.config, {"text": "🥂"}) 
             shaker_frame.after(1000, shaker_frame.config, {"text": "🍸"})
-            shaker_frame.after(1500, shaker_frame.config, {"text": "🍹"})  # Another icon for variety
+            shaker_frame.after(1500, shaker_frame.config, {"text": "🍹"}) 
             # Stop after this round of changes
             shaker_frame.after(2000, stop_animation)
 
@@ -77,6 +77,9 @@ def finish_ingredients():
         label.config(text="Whoops! Looks like one ingredient just won’t cut it for a cocktail! How about a glass of water instead? 💦")  # Display warning message
     else:
         label.config(text=f"Finished! Ingredients: {', '.join(ingredients)}")  # Show the ingredients if more than one
+        cocktail_label = tk.Label(root, text="!", font=("FixedSys", 17), fg="goldenrod", bg="VioletRed4")
+        cocktail_label.pack(pady=10)
+        cocktail_label.config(text=f"Here is a list of cocktails you can make: {'\n'.join(cocktails)}")
 
     # Clear screens
     ingredient_listbox.delete(0, tk.END)
