@@ -1,5 +1,5 @@
 import tkinter as tk
-from main import generate_drink, generate_drink_name
+import time
 
 # Function to handle button click (start the input process)
 def start_button():
@@ -32,15 +32,52 @@ def show_loading_screen():
     finish_button.pack_forget()
 
     making_cocktail_label.pack(pady=20)
+    start_animation()
 
-    # loading screen
+    # Loading screen (stop after 2 seconds)
     root.after(2000, finish_ingredients)
+
+def start_animation():
+    global shaking
+    shaking = True
+    shaker_frame = tk.Label(root, text="🍸", font=("FixedSys", 100), fg="white", bg="VioletRed4")  # Larger size
+    shaker_frame.pack(pady=20)
+    
+    # Function to change emojis in sequence
+    def shake_animation_once():
+        if shaking:
+            # Sequence of emojis to simulate shaking
+            shaker_frame.config(text="🍸")  # Cocktail glass emoji
+            shaker_frame.after(500, shaker_frame.config, {"text": "🥂"})  # Shaker or other symbols to simulate shaking
+            shaker_frame.after(1000, shaker_frame.config, {"text": "🍸"})
+            shaker_frame.after(1500, shaker_frame.config, {"text": "🍹"})  # Another icon for variety
+            # Stop after this round of changes
+            shaker_frame.after(2000, stop_animation)
+
+    # Function to stop the animation
+    def stop_animation():
+        global shaking
+        shaking = False
+        shaker_frame.pack_forget()  # Remove the shaker once animation is done
+
+    shake_animation_once()
+
 
 # Function to handle finishing the list of ingredients and showing the results
 def finish_ingredients():
+    # Stop animation immediately when the finish screen is triggered
+    global shaking
+    shaking = False
+
+    # Retrieve the ingredients list from the listbox
     ingredients = list(ingredient_listbox.get(0, tk.END))
-    label.config(text=f"Finished! Ingredients: {', '.join(ingredients)}")
     
+    # Check if there's only one ingredient
+    if len(ingredients) == 1:
+        label.config(text="Whoops! Looks like one ingredient just won’t cut it for a cocktail! How about a glass of water instead? 💦")  # Display warning message
+    else:
+        label.config(text=f"Finished! Ingredients: {', '.join(ingredients)}")  # Show the ingredients if more than one
+
     # Clear screens
     ingredient_listbox.delete(0, tk.END)
     entry.delete(0, tk.END)
