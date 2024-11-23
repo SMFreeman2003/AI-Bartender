@@ -1,92 +1,137 @@
-# streamlit run .\main.py
-# import streamlit as st
-#from openai import OpenAI
-#import getpass
-import os
-from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
-from langchain_core.messages import HumanMessage, SystemMessage
-#from langchain.llms import OpenAI
+import tkinter as tk
+import time
+from main import *
 
-# Intialization
-load_dotenv()
-api_key = os.environ["OPEN_API_KEY"]
-chat = ChatOpenAI(model='gpt-3.5-turbo-0125', api_key=api_key)
-#client = OpenAI(open_api_key=api_key)
+# Function to handle button click (start the input process)
+def start_button():
+    label.config(text="What ingredients do you have?")
+    button.pack_forget()
+    entry.pack(pady=10)
+    label_ingredient.pack(pady=5)
+    finish_button.pack(pady=20)
 
-""" def generate_drink(ingredients):
-    prompt_template = f"Give me an in depth recipe a drink. The drink should be made from the following list of ingredients: {ingredients}"
-    response = chat(
-        [
-            SystemMessage(content='You are an AI Bartender. Give an in depth recipe for the required amount of servings of the drink, including the time to make, ingredients, price, steps, and a few slight alterations that can be made to the drink (i.e. more/less boosy and more/less bitter). Leave out the ingredients that we already have out of the price estimation and state why they were left out.'),
-            HumanMessage(content=prompt_template)
-        ]
-    )
-    return response.content """
+# Function to handle ingredient input when "Enter" is pressed
+def enter_ingredient(event=None):
+    ingredient = entry.get()  # Get the input from the Entry widget
+    if ingredient:
+        if ingredient_listbox.winfo_ismapped() == False:
+            ingredient_listbox.pack(pady=20)
+        ingredient_listbox.insert(tk.END, ingredient)
+        
+        # Clear screen
+        entry.delete(0, tk.END)
+    else:
+        label.config(text="Please enter an ingredient!")
 
-""" def generate_drink_name(ingredients):
-    prompt_template = f"Name a drink that uses {ingredients}."
-    response = chat(
-        [
-            SystemMessage(content='You are an AI Bartender. List only the names of the drinks with detail, and nothing else.'),
-            HumanMessage(content=prompt_template)
-        ]
-    )
-    return response.content
+# Function to show the "Making Your Personalized Cocktails..." screen
+def show_loading_screen():
+    # Clear screen
+    label.pack_forget()
+    entry.pack_forget()
+    ingredient_listbox.pack_forget()
+    label_ingredient.pack_forget()
+    finish_button.pack_forget()
 
-def generate_drink_ingredients(ingredients):
-    prompt_template = f"Come up with a drink that uses {ingredients}, then write the ingredient list and quantities. If one of the ingredients is harmful, do not note that it is harmful; simply only use the other ingredients."
-    response = chat(
-        [
-            SystemMessage(content='You are an AI Bartender. Return a list of ingredients and their quantities, and nothing else.'),
-            HumanMessage(content=prompt_template)
-        ]
-    )
-    return response.content """
+    making_cocktail_label.pack(pady=20)
+    start_animation()
 
-# This is what I was experimenting with, but I couldn't get it to work.
-# TODO: Fix the "drink suggestion" if you don't have ingredients
-# TODO: incorporate cocktail book
+    # Loading screen (stop after 2 seconds)
+    root.after(2000, finish_ingredients)
 
-""" def generate_drink(ingredients):
-    prompt_template = f"Name a drink that uses {ingredients}, then write a list of ingredients with quantities after them. Separate the two with an @ symbol. If one of the ingredients is harmful, do not note that it is harmful; simply only use the other ingredients. If the ingredient list given is insufficient for making a tasty beverage, suggest the complete drink that it is closest to. Add additional ingredients that would need to be bought, and denote them with the word (buy) in parentheses;"
-    response = chat(
-        [
-            SystemMessage(content='You are an AI Bartender. Return only the name of a drink and then the list of ingredients, including ingredients which are necessary but which I do not have. Separate the two with a @.'),
-            HumanMessage(content=prompt_template)
-        ]
-    )
-    return response.content """
+def start_animation():
+    global shaking
+    shaking = True
+    shaker_frame = tk.Label(root, text="🍸", font=("FixedSys", 100), fg="white", bg="VioletRed4")  # Larger size
+    shaker_frame.pack(pady=20)
+    
+    # Function to change emojis in sequence
+    def shake_animation_once():
+        if shaking:
+            # Sequence of emojis to simulate shaking
+            shaker_frame.config(text="🍸")  # Cocktail glass emoji
+            shaker_frame.after(500, shaker_frame.config, {"text": "🥂"}) 
+            shaker_frame.after(1000, shaker_frame.config, {"text": "🍸"})
+            shaker_frame.after(1500, shaker_frame.config, {"text": "🍹"}) 
+            # Stop after this round of changes
+            shaker_frame.after(2000, stop_animation)
 
-def generate_drink(ingredients):
-    prompt_template = f"Name a drink that uses {ingredients}, then write a list of ingredients with quantities after them. Separate the two with an @ symbol. If one of the ingredients is harmful, do not note that it is harmful; simply only use the other ingredients."
-    response = chat(
-        [
-            SystemMessage(content='You are an AI Bartender. Return only the name of a drink and then the list of ingredients. Separate the two with a @.'),
-            HumanMessage(content=prompt_template)
-        ]
-    )
-    return response.content
+    # Function to stop the animation
+    def stop_animation():
+        global shaking
+        shaking = False
+        shaker_frame.pack_forget()  # Remove the shaker once animation is done
 
-# def main():
-#     st.title('AI Bartender')
-#     st.header('Hello from your AI Bartender: I will help you make a drink')
+    shake_animation_once()
 
-#     ingredients = st.text_input('What ingredients do you have?')
-#     if ingredients:
-#         appliance_options = ["None", "Shaker", "Blender"]
-#         appliance = st.multiselect("What appliances do you have to use?", appliance_options)
-#         if appliance:
-#             servings = st.text_input("How many servings do you want to make?")
-#             if servings:
-#                 price = st.slider("How many much would you like to spend on this drink?", min_value=0, max_value=100, step=1, value=(10,20), format=" $%d")
-#                 submit_button = st.button("Submit")
-#                 if submit_button:
-#                     drink_name = generate_drink_name(ingredients=ingredients, appliance=appliance)
-#                     drink_recipie = generate_drink(ingredients=ingredients, appliance=appliance, servings=servings, price=price)
-#                     st.write(f'You can make {drink_name}, here is the recipie')
-#                     st.write(drink_recipie)
 
-# #Run the Streamlit app
-# if __name__ == '__main__':
-#     main()
+# Function to handle finishing the list of ingredients and showing the results
+def finish_ingredients():
+    # Stop animation immediately when the finish screen is triggered
+    global shaking
+    shaking = False
+
+    # Retrieve the ingredients list from the listbox
+    ingredients = list(ingredient_listbox.get(0, tk.END))
+
+    # Split the response into a name and an ingredient list
+    response = generate_drink(ingredients).split('@')
+    
+    # Check if there's only one ingredient
+    if len(ingredients) <= 1:
+        label.config(text="Whoops! Looks like that just won’t cut it for a cocktail! \n How about a glass of water instead? 💦")  # Display warning message
+        retry_button.pack(pady=30)  # Show the button to allow retrying the ingredient input
+    else:
+        label.config(text=f"Finished! Ingredients: \n{response[1]}")  # Show the ingredients if more than one
+        cocktail_label = tk.Label(root, text="!", font=("FixedSys", 17), fg="goldenrod", bg="VioletRed4")
+        cocktail_label.pack(pady=30)
+        cocktail_label.config(text=f"Here is a cocktail you can make: \n{response[0]}")
+
+    # Clear screens
+    ingredient_listbox.delete(0, tk.END)
+    entry.delete(0, tk.END)
+    making_cocktail_label.pack_forget()
+    label.pack(pady=20)
+    ingredient_listbox.pack_forget()
+    entry.pack_forget()
+    label_ingredient.pack_forget()
+
+# Function to allow the user to enter more ingredients
+def retry_ingredients():
+    # Hide the retry button
+    retry_button.pack_forget()
+
+    # Reset the ingredient list and show the input fields again
+    label.config(text="What ingredients do you have?")
+    entry.pack(pady=10)
+    label_ingredient.pack(pady=5)
+    finish_button.pack(pady=20)
+
+# Create the main window
+root = tk.Tk()
+root.title("Simple GUI App")
+root.geometry("1600x1200")  # Width x Height
+root.configure(bg="VioletRed4")
+
+# Welcome screen
+label = tk.Label(root, text="Welcome to AI Bartender!", font=("FixedSys", 17), fg="goldenrod", bg="VioletRed4")
+label.pack(pady=20)
+button = tk.Button(root, text="Start your personalized cocktail experience", command=start_button, font=("FixedSys", 12), bg="old lace")
+button.pack()
+
+# Ingredient input stuff
+entry = tk.Entry(root, font=("FixedSys", 12), bg="light yellow", width=30)
+label_ingredient = tk.Label(root, text="Press Enter after each ingredient", font=("FixedSys", 12), fg="white", bg="VioletRed4")
+ingredient_listbox = tk.Listbox(root, font=("FixedSys", 12), width=30, height=8, bg="light yellow", fg="black", selectmode=tk.SINGLE)
+entry.bind("<Return>", enter_ingredient)
+
+# Finish button
+finish_button = tk.Button(root, text="Finish Ingredients", command=show_loading_screen, font=("FixedSys", 12), bg="old lace")
+
+# Retry button (for entering more ingredients)
+retry_button = tk.Button(root, text="Retry and Enter More Ingredients", command=retry_ingredients, font=("FixedSys", 12), bg="old lace")
+
+# Loading screen
+making_cocktail_label = tk.Label(root, text="Making Your Personalized Cocktails...", font=("FixedSys", 20), fg="white", bg="VioletRed4")
+
+# Run the application
+root.mainloop()
