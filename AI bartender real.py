@@ -72,16 +72,19 @@ def finish_ingredients():
 
     # Retrieve the ingredients list from the listbox
     ingredients = list(ingredient_listbox.get(0, tk.END))
+
+    # Split the response into a name and an ingredient list
+    response = generate_drink(ingredients).split('@')
     
     # Check if there's only one ingredient
     if len(ingredients) <= 1:
         label.config(text="Whoops! Looks like that just won’t cut it for a cocktail! \n How about a glass of water instead? 💦")  # Display warning message
         retry_button.pack(pady=30)  # Show the button to allow retrying the ingredient input
     else:
-        label.config(text=f"Finished! Ingredients: {', '.join(ingredients)}")  # Show the ingredients if more than one
+        label.config(text=f"Finished! Ingredients: \n{response[1]}")  # Show the ingredients if more than one
         cocktail_label = tk.Label(root, text="!", font=("FixedSys", 17), fg="goldenrod", bg="VioletRed4")
         cocktail_label.pack(pady=30)
-        cocktail_label.config(text=f"Here is a list of cocktails you can make: \n{generate_drink_name(ingredients)}")
+        cocktail_label.config(text=f"Here is a cocktail you can make: \n{response[0]}")
 
     # Clear screens
     ingredient_listbox.delete(0, tk.END)
