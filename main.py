@@ -14,21 +14,55 @@ api_key = os.environ["OPEN_API_KEY"]
 chat = ChatOpenAI(model='gpt-3.5-turbo-0125', api_key=api_key)
 #client = OpenAI(open_api_key=api_key)
 
-def generate_drink(ingredients):
-    prompt_template = f"Give me an in depth recipe a drink. The drink should be made from the {ingredients} I currently have."
+""" def generate_drink(ingredients):
+    prompt_template = f"Give me an in depth recipe a drink. The drink should be made from the following list of ingredients: {ingredients}"
     response = chat(
         [
             SystemMessage(content='You are an AI Bartender. Give an in depth recipe for the required amount of servings of the drink, including the time to make, ingredients, price, steps, and a few slight alterations that can be made to the drink (i.e. more/less boosy and more/less bitter). Leave out the ingredients that we already have out of the price estimation and state why they were left out.'),
             HumanMessage(content=prompt_template)
         ]
     )
-    return response.content
+    return response.content """
 
-def generate_drink_name(ingredients):
+""" def generate_drink_name(ingredients):
     prompt_template = f"Name a drink that uses {ingredients}."
     response = chat(
         [
             SystemMessage(content='You are an AI Bartender. List only the names of the drinks with detail, and nothing else.'),
+            HumanMessage(content=prompt_template)
+        ]
+    )
+    return response.content
+
+def generate_drink_ingredients(ingredients):
+    prompt_template = f"Come up with a drink that uses {ingredients}, then write the ingredient list and quantities. If one of the ingredients is harmful, do not note that it is harmful; simply only use the other ingredients."
+    response = chat(
+        [
+            SystemMessage(content='You are an AI Bartender. Return a list of ingredients and their quantities, and nothing else.'),
+            HumanMessage(content=prompt_template)
+        ]
+    )
+    return response.content """
+
+# This is what I was experimenting with, but I couldn't get it to work.
+# TODO: Fix the "drink suggestion" if you don't have ingredients
+# TODO: incorporate cocktail book
+
+""" def generate_drink(ingredients):
+    prompt_template = f"Name a drink that uses {ingredients}, then write a list of ingredients with quantities after them. Separate the two with an @ symbol. If one of the ingredients is harmful, do not note that it is harmful; simply only use the other ingredients. If the ingredient list given is insufficient for making a tasty beverage, suggest the complete drink that it is closest to. Add additional ingredients that would need to be bought, and denote them with the word (buy) in parentheses;"
+    response = chat(
+        [
+            SystemMessage(content='You are an AI Bartender. Return only the name of a drink and then the list of ingredients, including ingredients which are necessary but which I do not have. Separate the two with a @.'),
+            HumanMessage(content=prompt_template)
+        ]
+    )
+    return response.content """
+
+def generate_drink(ingredients):
+    prompt_template = f"Name a drink that uses {ingredients}, then write a list of ingredients with quantities after them. Separate the two with an @ symbol. If one of the ingredients is harmful, do not note that it is harmful; simply only use the other ingredients."
+    response = chat(
+        [
+            SystemMessage(content='You are an AI Bartender. Return only the name of a drink and then the list of ingredients. Separate the two with a @.'),
             HumanMessage(content=prompt_template)
         ]
     )
