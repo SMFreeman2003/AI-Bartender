@@ -85,6 +85,7 @@ def finish_ingredients():
         cocktail_label = tk.Label(root, text="!", font=("FixedSys", 17), fg="goldenrod", bg="VioletRed4")
         cocktail_label.pack(pady=30)
         cocktail_label.config(text=f"Here is a cocktail you can make: \n{response[0]}")
+        retry_button.pack(pady=30)
 
     # Clear screens
     ingredient_listbox.delete(0, tk.END)
