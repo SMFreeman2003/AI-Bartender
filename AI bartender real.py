@@ -108,7 +108,7 @@ def retry_ingredients():
 
 # Create the main window
 root = tk.Tk()
-root.title("Simple GUI App")
+root.title("AI Bartender")  # Changed from "Simple GUI App" to "AI Bartender" just for immersion ig
 root.geometry("1600x1200")  # Width x Height
 root.configure(bg="VioletRed4")
 
